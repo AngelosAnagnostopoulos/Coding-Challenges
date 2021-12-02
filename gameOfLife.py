@@ -15,7 +15,6 @@ class GameOfLife():
 
 
     def __init__(self,rows,cols):
-        self.state = 0 
         self.rows = rows
         self.cols = cols
         self.play = False 
@@ -42,8 +41,6 @@ class GameOfLife():
         self.window.mainloop()
 
     def drawArray(self):
-        print(self.state)
-        self.state += 1
         arr = self.grid
         for i in range(self.cols):
             for j in range(self.rows):
@@ -53,7 +50,6 @@ class GameOfLife():
                     self.canvas.create_rectangle(x,y,x+self.res-1,y+self.res-1, fill="black")
                 else:
                     self.canvas.create_rectangle(x,y,x+self.res-1,y+self.res-1, fill="white")
-        self.state -= 1
 
     def callback(self,event):
         x = event.x
@@ -67,7 +63,7 @@ class GameOfLife():
         self.grid = [[random.randint(0,0) for i in range(self.cols)] for j in range(self.rows)]
 
     def nextState(self):
-
+        self.canvas.delete("all")
         self.next = copy.deepcopy(self.grid)
         for i in range(self.cols):
             for j in range(self.rows):
