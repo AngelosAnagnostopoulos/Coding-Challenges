@@ -1,9 +1,5 @@
 # Implementation of Cellular Automata project "Game of Life" in Python 3.x
 
-#Todolist:
-#Add button for start/stop functionality
-#Add edit capabilities with clicking
-
 """
 Rules:  Any live cell with <2 live neighbours dies.
         Any live cell with 2 or 3 live neighbours lives to next generation.
@@ -19,10 +15,13 @@ class GameOfLife():
 
 
     def __init__(self,rows,cols):
-        
+        self.state = 0 
         self.rows = rows
         self.cols = cols
         self.play = False 
+        self.makeArray()
+        self.graphicsSetup()
+        self.drawArray()
 
     def graphicsSetup(self):
         
@@ -43,6 +42,8 @@ class GameOfLife():
         self.window.mainloop()
 
     def drawArray(self):
+        print(self.state)
+        self.state += 1
         arr = self.grid
         for i in range(self.cols):
             for j in range(self.rows):
@@ -52,17 +53,18 @@ class GameOfLife():
                     self.canvas.create_rectangle(x,y,x+self.res-1,y+self.res-1, fill="black")
                 else:
                     self.canvas.create_rectangle(x,y,x+self.res-1,y+self.res-1, fill="white")
+        self.state -= 1
 
     def callback(self,event):
         x = event.x
         y = event.y
         ind_x = x // self.res
         ind_y = y // self.res
-        self.toggle(self.grid[ind_x][ind_y])
+        self.toggle(ind_x,ind_y)
         self.drawArray()
 
     def makeArray(self):
-        self.grid = [[random.randint(0,1) for i in range(self.cols)] for j in range(self.rows)]
+        self.grid = [[random.randint(0,0) for i in range(self.cols)] for j in range(self.rows)]
 
     def nextState(self):
 
@@ -78,16 +80,16 @@ class GameOfLife():
                 else:
                     self.next[i][j] = 0
         self.grid = self.next
+        del self.next
 
-    def toggle(self,d):
-        if d == 0:
-            d = 1
+    def toggle(self,i,j):
+        if self.grid[i][j] == 0:
+            self.grid[i][j] = 1
+        elif self.grid[i][j] == 1:
+            self.grid[i][j] = 0
 
     def buttonFunc(self):
-        if self.play == True:
-            self.play = False
-        elif self.play == False:
-            self.play = True
+        self.play = not self.play      
         self.run()
 
     def run(self):
@@ -109,10 +111,6 @@ class GameOfLife():
     
     
     def main(self):
-
-        self.makeArray()
-        self.graphicsSetup()
-        self.run()
         self.start_loop()
        
 
