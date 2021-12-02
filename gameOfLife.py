@@ -22,23 +22,25 @@ class GameOfLife():
         
         self.rows = rows
         self.cols = cols
-
+        self.play = False 
 
     def graphicsSetup(self):
         
         self.window = tk.Tk()
         self.res = 20
-        self.width = self.cols * self.res
+        self.width = self.cols * self.res + 100
         self.height = self.rows * self.res
         self.window.geometry(f"{self.width}x{self.height}")
         self.window.title("Game of Life")
         self.window.resizable(0,0)
         self.canvas = tk.Canvas(self.window, width = self.width, height = self.height)
+        self.button = tk.Button(self.window, text = "Start/Stop", command=self.buttonFunc)
+        self.button.place(x=805,y=400)
+        self.canvas.bind("<Button-1>",self.callback)
         self.canvas.pack()
         
     def start_loop(self):    
-      self.window.mainloop()
-        
+        self.window.mainloop()
 
     def drawArray(self):
         arr = self.grid
@@ -51,15 +53,20 @@ class GameOfLife():
                 else:
                     self.canvas.create_rectangle(x,y,x+self.res-1,y+self.res-1, fill="white")
 
+    def callback(self,event):
+        x = event.x
+        y = event.y
+        ind_x = x // self.res
+        ind_y = y // self.res
+        self.toggle(self.grid[ind_x][ind_y])
+        self.drawArray()
 
     def makeArray(self):
-        
         self.grid = [[random.randint(0,1) for i in range(self.cols)] for j in range(self.rows)]
-        
 
     def nextState(self):
 
-        self.next = copy.copy(self.grid)
+        self.next = copy.deepcopy(self.grid)
         for i in range(self.cols):
             for j in range(self.rows):
                 state = self.grid[i][j]
@@ -72,12 +79,22 @@ class GameOfLife():
                     self.next[i][j] = 0
         self.grid = self.next
 
+    def toggle(self,d):
+        if d == 0:
+            d = 1
+
+    def buttonFunc(self):
+        if self.play == True:
+            self.play = False
+        elif self.play == False:
+            self.play = True
+        self.run()
 
     def run(self):
-      self.nextState()
-      self.drawArray()
-      self.window.after(100, self.run)
-
+        if self.play:
+            self.nextState()
+            self.drawArray()
+            self.window.after(100, self.run)
 
     def countNeighbors(self,x,y):
     
