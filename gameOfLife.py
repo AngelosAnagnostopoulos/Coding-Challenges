@@ -3,7 +3,6 @@
 #Todolist:
 #Add button for start/stop functionality
 #Add edit capabilities with clicking
-#Optimise the code so that it doesn't use two for loops every time
 
 """
 Rules:  Any live cell with <2 live neighbours dies.
